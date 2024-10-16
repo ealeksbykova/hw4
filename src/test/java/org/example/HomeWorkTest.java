@@ -1,5 +1,7 @@
 package org.example;
 
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -9,14 +11,41 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HomeWorkTest {
 
-    HomeWork homeWork = new HomeWork();
+    HomeWork homeWork;
+    TicketManager ticket;
 
+
+    @BeforeEach
+    void setUp() {
+        homeWork = new HomeWork();
+        ticket = homeWork.managerFabric();
+    }
+
+    @SneakyThrows
     @Test
     void managerFabric() {
+        addTicket("ticket1");
+        addTicket("ticket2");
+        addTicket("pension");
+        addTicket("pension");
+        addTicket("ticket3");
+        addTicket("ticket4");
+        addTicket("ticket5");
+
+        assertAll(
+            () -> assertEquals(3, ticket.next().id),
+            () -> assertEquals(4, ticket.next().id),
+            () -> assertEquals(1, ticket.next().id),
+            () -> assertEquals(2, ticket.next().id),
+            () -> assertEquals(5, ticket.next().id),
+            () -> assertEquals(6, ticket.next().id),
+            () -> assertEquals(7, ticket.next().id)
+        );
     }
 
     @Test
@@ -46,5 +75,9 @@ class HomeWorkTest {
                 .collect(Collectors.toList());
     }
 
-
+    @SneakyThrows
+    private void addTicket(String type) {
+        ticket.add(new Ticket(type));
+        Thread.sleep(1000);
+    }
 }
